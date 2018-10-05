@@ -18,24 +18,60 @@ section {
   left: 15px;
 
   .map {
-    z-index: -1;
     border: 1px solid #ccc;
+    cursor: pointer;
 
     .point {
+      z-index: 10;
       fill: white;
       fill-opacity: 0;
       stroke: white;
       stroke-width: 2;
+
+      &:hover {
+        stroke: blue;
+        @include box-shadow($n-yellow);
+      }
     }
   }
+
+}
+aside {
+  right: 15px;
+  width: 24%;
+  padding: 20px;
+
+  .change-mode {
+    position: relative;
+    top: 100px;
+
+    .change-btn {
+      width: 100%;
+      display: block;
+      margin: auto;
+      margin-bottom: 10px;
+      padding: 8px 16px;
+      background: transparent;
+      color: white;
+      text-align: center;
+      border: 1px solid #222;
+      border-radius: 12px;
+      transition: all .1s ease-in-out;
+
+      &:hover {
+        cursor: pointer;
+        border-color: white;
+        color: white;
+        @include box-shadow($n-blue);
+        @include text-shadow($n-blue);
+      }
+    }
+  }
+
   .btn-container {
     list-style: none;
     margin: 0;
-    position: absolute;
-    left: 0;
-    bottom: 0;
     width: 100%;
-    height: 90px;
     padding: 10px;
 
     .action-btn {
@@ -68,33 +104,6 @@ section {
         visibility: hidden;
         color: #222;
       }
-    }
-  }
-}
-aside {
-  right: 15px;
-  width: 24%;
-  padding: 20px;
-
-  .change-btn {
-    width: 100%;
-    display: block;
-    margin: auto;
-    margin-bottom: 10px;
-    padding: 8px 16px;
-    background: transparent;
-    color: white;
-    text-align: center;
-    border: 1px solid #222;
-    border-radius: 12px;
-    transition: all .1s ease-in-out;
-
-    &:hover {
-      cursor: pointer;
-      border-color: white;
-      color: white;
-      @include box-shadow($n-blue);
-      @include text-shadow($n-blue);
     }
   }
 }
