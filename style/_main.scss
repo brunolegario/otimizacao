@@ -1,0 +1,43 @@
+aside, section {
+  background-color: transparent;
+  display: inline-block;
+  border: 3px solid #222;
+  height: calc(100% - 105px);
+  border-radius: 20px;
+  margin: 0px 10px;
+  transition: all .1s ease-in-out;
+  vertical-align: top;
+  &:hover {
+    border-color: white;
+    box-shadow: 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de;
+  }
+}
+section {
+  width: 72%;
+}
+aside {
+  width: 24%;
+  padding: 20px;
+
+  .change-btn {
+    width: 100%;
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+    padding: 8px 16px;
+    background: transparent;
+    color: #222;
+    text-align: center;
+    border: 1px solid #222;
+    border-radius: 12px;
+    transition: all .1s ease-in-out;
+
+    &:hover {
+      cursor: pointer;
+      border-color: white;
+      color: white;
+      box-shadow: 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de;
+      text-shadow: 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, 0px 0px 16px #ff00de;
+    }
+  }
+}
