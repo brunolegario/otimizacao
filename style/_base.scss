@@ -1,5 +1,24 @@
 @import url('https://fonts.googleapis.com/css?family=K2D:300,400&subset=latin-ext');
 
+$n-red:#FF0000;
+$n-green: #00FF00;
+$n-blue: #0000FF;
+$n-cyan:#00FFFF;
+$n-magenta: #ff00de;
+$n-yellow: #FFFF00;
+
+$default-tblur: 10px;
+$default-bblur: 16px;
+
+@mixin text-shadow($color) {
+  color: white;
+  text-shadow: 0px 0px $default-tblur $color, 0px 0px $default-tblur $color, 0px 0px $default-tblur $color,0px 0px $default-tblur $color;
+}
+@mixin box-shadow($color) {
+  border-color: white;
+  box-shadow: 0px 0px $default-bblur $color, 0px 0px $default-bblur $color, inset 0px 0px $default-bblur $color, inset 0px 0px $default-bblur $color;
+}
+
 * {
   box-sizing: border-box;
   font-family: 'K2D', sans-serif;

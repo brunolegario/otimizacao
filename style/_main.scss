@@ -1,21 +1,68 @@
 aside, section {
-  background-color: transparent;
   display: inline-block;
-  border: 3px solid #222;
+  position: absolute;
+  top: 100px;
   height: calc(100% - 105px);
+  background-color: transparent;
+  border: 3px solid #222;
   border-radius: 20px;
-  margin: 0px 10px;
   transition: all .1s ease-in-out;
   vertical-align: top;
+  overflow: hidden;
   &:hover {
-    border-color: white;
-    box-shadow: 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de;
+    @include box-shadow($n-cyan);
   }
 }
 section {
   width: 72%;
+  left: 15px;
+
+  .map {
+    z-index: -1;
+    border: 1px solid ccc;
+
+    .point {
+      fill: white;
+      fill-opacity: 0;
+      stroke: white;
+      stroke-width: 2;
+    }
+  }
+  .btn-container {
+    list-style: none;
+    margin: 0;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 90px;
+    padding: 10px;
+
+    .action-btn {
+      display: inline-block;
+      text-align: center;
+
+      button {
+        display: inline-block;
+        border: 1px solid #222;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        color: #222;
+        &:hover {
+          @include text-shadow($n-red);
+          @include box-shadow($n-green);
+        }
+      }
+      label {
+        display: block;
+      }
+    }
+  }
 }
 aside {
+  right: 15px;
   width: 24%;
   padding: 20px;
 
