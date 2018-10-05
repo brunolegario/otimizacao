@@ -19,7 +19,7 @@ section {
 
   .map {
     z-index: -1;
-    border: 1px solid ccc;
+    border: 1px solid #ccc;
 
     .point {
       fill: white;
@@ -44,19 +44,29 @@ section {
 
       button {
         display: inline-block;
-        border: 1px solid #222;
+        border: 1px solid white;
         border-radius: 50%;
         width: 40px;
         height: 40px;
+        margin-bottom: 4px;
         background: transparent;
-        color: #222;
+        color: white;
+        cursor: pointer;
         &:hover {
           @include text-shadow($n-red);
-          @include box-shadow($n-green);
+          @include box-shadow($n-red);
+
+          + label {
+            @include text-shadow($n-red);
+            visibility: visible;
+          }
         }
       }
       label {
+        font-size: 14px;
         display: block;
+        visibility: hidden;
+        color: #222;
       }
     }
   }
@@ -73,7 +83,7 @@ aside {
     margin-bottom: 10px;
     padding: 8px 16px;
     background: transparent;
-    color: #222;
+    color: white;
     text-align: center;
     border: 1px solid #222;
     border-radius: 12px;
@@ -83,8 +93,8 @@ aside {
       cursor: pointer;
       border-color: white;
       color: white;
-      box-shadow: 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de, inset 0px 0px 16px #ff00de;
-      text-shadow: 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, 0px 0px 16px #ff00de, 0px 0px 16px #ff00de;
+      @include box-shadow($n-blue);
+      @include text-shadow($n-blue);
     }
   }
 }

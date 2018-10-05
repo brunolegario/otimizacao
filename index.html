@@ -4,7 +4,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Optimization_Technics</title>
-        <link rel="stylesheet" href="style/styles.css">
+
+        <link href="style/css/bootstrap-grid.min.css" rel="stylesheet">
+        <link href="style/css/all.css" rel="stylesheet">
+        <link rel="stylesheet" href="style/css/styles.css">
     </head>
     <body>
         <header class="">
@@ -27,10 +30,26 @@
             <svg id="map" width="100%" height="100%" class="map">
 
             </svg>
-            <ul class="btn-container">
+            <ul class="btn-container row justify-content-around">
                 <li class="action-btn">
-                    <button>+?</button>
-                    <label>add random point</label>
+                    <button><i class="far fa-file-alt"></i></button>
+                    <label>PRESET POINTS</label>
+                </li>
+                <li class="action-btn">
+                    <button><i class="fas fa-question"></i></button>
+                    <label>ADD RANDOM POINT</label>
+                </li>
+                <li class="action-btn">
+                    <button><i class="fas fa-plus"></i></button>
+                    <label>INPUT POINTS MODE</label>
+                </li>
+                <li class="action-btn">
+                    <button><i class="fas fa-times"></i></button>
+                    <label>DELETE ALL POINTS</label>
+                </li>
+                <li class="action-btn">
+                    <button><i class="fas fa-play"></i></button>
+                    <label>FIND CLOSEST PAIR</label>
                 </li>
             </ul>
         </section>
@@ -40,6 +59,7 @@
             <button class="change-btn">find_the_way</button>
         </aside>
 
+        <script src="js/bootstrap.min.js"></script>
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/main.js"></script>
     </body>
