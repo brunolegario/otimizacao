@@ -1,14 +1,17 @@
 let SVG_URL = "http://www.w3.org/2000/svg";
 let REFS = {
     title: null,
-    map: null
+    map: null,
+    btn_special: null
 };
+REFS.title = $('#title');
 REFS.map = $('#map');
+REFS.btn_special = $('#btn-special');
 
 // 0==CLOSEST PATH, 1==GRAHAM_SCAN, 2==FIND_THE_WAY
 let MODE = 0;
 
-let canAdd = true;
+let canAdd = false;
 let originalPoints = [
     {x: -13.0, y: 0.5},
     {x: -10.5, y: -11.5},
@@ -38,7 +41,7 @@ $(document).ready(function() {
 
 /* BASE */
 function CreateClickPoint(ev) {
-    if (MODE !== 0 || !canAdd) { return; }
+    if (!canAdd) { return; }
 
     let clickX = ev.pageX - 15;
     let clickY = ev.pageY - 100;
@@ -90,10 +93,34 @@ function DrawCircle(posX, posY) {
 
     $('#map').append(newPoint);;
 }
+function DrawConvexHull(points) {
+    if (!points) { return; }
+
+    let convexHull = document.createElementNS(SVG_URL, 'polyline');
+        convexHull.setAttributeNS(null, 'points', '');
+
+    let setOfPs = convexHull.getAttribute('points');
+    console.log(setOfPs);
+    for (let i = 0; i <= points.length; i++) {
+        if (i === points.length) {
+            setOfPs += `${points[0].x}, ${points[0].y} `;
+        } else {
+            setOfPs += `${points[i].x}, ${points[i].y} `;
+        }
+    }
+    console.log(setOfPs);
+    convexHull.setAttribute('points', setOfPs);
+
+    $(convexHull).addClass('hull');
+    $(convexHull).attr('id', `convex-hull-svg`);
+
+    $('#map').append(convexHull);
+}
 
 /* CLOSEST PAIR OF POINTS */
 function FindClosestPair() {
     if (points.length === 0) { return; }
+    console.log(points);
 
     // If there are any highlighted points
     REFS.map.children('.active').removeClass('active');
@@ -315,6 +342,7 @@ function GrahamScan(points) {
         }
     }
 
+    DrawConvexHull(convexHull);
     return convexHull;
 }
 
@@ -365,6 +393,75 @@ function GetGrahamAngle(x, y) {
 function CrossProduct(p1, p2, p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
+function ChangeMode(num) {
+    REFS.title.empty();
+    REFS.btn_special.empty();
+    if (num === 0) {
+        REFS.title.append(
+            `<span>c</span>
+            <span>l</span>
+            <span>o</span>
+            <span>s</span>
+            <span>e</span>
+            <span>s</span>
+            <span>t</span>
+            <span>_</span>
+            <span>p</span>
+            <span>a</span>
+            <span>i</span>
+            <span>r</span>`);
+        REFS.btn_special.append(
+            `<button onclick="FindClosestPair();"><i class="fas fa-play"></i></button>
+            <label>FIND CLOSEST PAIR</label>`
+        );
+    } else if (num === 1) {
+        REFS.title.append(
+            `<span>q</span>
+            <span>u</span>
+            <span>i</span>
+            <span>c</span>
+            <span>k</span>
+            <span>_</span>
+            <span>h</span>
+            <span>u</span>
+            <span>l</span>
+            <span>l</span>`);
+        REFS.btn_special.append(
+            `<button onclick="FindQuickHull();"><i class="fas fa-play"></i></button>
+            <label>FIND QUICK HULL</label>`
+        );
+    } else {
+        REFS.title.append(
+            `<span>f</span>
+            <span>i</span>
+            <span>n</span>
+            <span>d</span>
+            <span>_</span>
+            <span>t</span>
+            <span>h</span>
+            <span>e</span>
+            <span>_</span>
+            <span>w</span>
+            <span>a</span>
+            <span>y</span>`);
+        REFS.btn_special.append(
+            `<button onclick="AStar();"><i class="fas fa-play"></i></button>
+            <label>FIND QUICK HULL</label>`);
+    }
+
+    MODE = num;
+}
+function ToggleCreationPoint(el) {
+    canAdd = !canAdd;
+    if (canAdd) {
+        console.log(true);
+        $(el).addClass('active');
+    } else {
+        console.log(false);
+        $(el).removeClass('active');
+    }
+}
+
 
 /* RESET */
 function DeleteAllPoints() {
@@ -372,3 +469,6 @@ function DeleteAllPoints() {
     REFS.map.empty();
     pointsCount = 0;
 }
+
+
+
