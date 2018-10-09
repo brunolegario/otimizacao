@@ -36,6 +36,7 @@ $(document).ready(function() {
     });
 });
 
+/* BASE */
 function CreateClickPoint(ev) {
     if (MODE !== 0 || !canAdd) { return; }
 
@@ -90,6 +91,7 @@ function DrawCircle(posX, posY) {
     $('#map').append(newPoint);;
 }
 
+/* CLOSEST PAIR OF POINTS */
 function FindClosestPair() {
     if (points.length === 0) { return; }
 
@@ -97,8 +99,8 @@ function FindClosestPair() {
     REFS.map.children('.active').removeClass('active');
 
     // Order by X (resolve ties by Y)
-    let orderedPoints = SortArrayByXandY(points);
-    let deltaObj = DivideAndConquer(0, orderedPoints.length);
+    let orderedPointsByX = SortArrayByXandY(points);
+    let deltaObj = DivideAndConquer(0, orderedPointsByX.length);
 
     $(`#${deltaObj.id1}`).addClass('active');
     $(`#${deltaObj.id2}`).addClass('active');
@@ -170,7 +172,59 @@ function DivideAndConquer(start, end) {
     }
 }
 
-function GrahamScan() {
+
+/* A-STAR */
+function AStar() {
+    // Find the bigger shortest distance
+    let biggerShortestDist = 0;
+    for (let i = 0; i < points.length; i++) {
+        let shortestDistance = 0;
+
+        for (let j = 0; j < points.length; j++) {
+            if (shortestDistance === 0) {
+                shortestDistance = Dist(points[i], points[j]).dist;
+            } else {
+                let dist = Dist(points[i], points[j]).dist;
+                if (dist < shortestDistance) {
+                    shortestDistance = dist;
+                }
+            }
+        }
+
+        if (shortestDistance > biggerShortestDist) {
+            biggerShortestDist = shortestDistance;
+        }
+    }
+
+    // Create the graph
+    // From a copy of points, add the .siblings attribute to each element
+    // Find the siblings of all the points
+    let graph = [];
+    $.each(points, function(index, point) {
+        let copyOfPoint = {
+            id: point.id,
+            x: point.x,
+            y: point.y,
+            siblings: []
+        }
+        graph.push(copyOfPoint);
+    });
+    for (let i = 0; i < graph.length - 1; i++) {
+        for (let j = i + 1; j < graph.length; j++) {
+            let dist = Dist(graph[i], graph[j]).dist;
+            if (dist < biggerShortestDist) {
+                graph[i].siblings.push(points[j].id);
+                graph[j].siblings.push(points[i].id);
+            }
+        }
+    }
+
+    let convexHullByGraham = GrahamScan(graph);
+    console.log(graph);
+    console.log(convexHullByGraham);
+}
+function GrahamScan(points) {
+    // http://www.algomation.com/algorithm/graham-scan-convex-hull
     if (points.length === 0) { return; }
     let convexHull = [];
 
@@ -181,18 +235,27 @@ function GrahamScan() {
 
     // Create a copy of the array and find the point
     // with the smaller y
-    let restOfPoints = points;
-    let smallestY = points[0];
+    let restOfPoints = [];
+    $.each(points, function(index, point) {
+        let copyOfPoint = {
+            id: point.id,
+            x: point.x,
+            y: point.y,
+            siblings: point.siblings
+        }
+        restOfPoints.push(copyOfPoint);
+    });
+    let smallestY = restOfPoints[0];
     let indexSmallestY = 0;
-    for (let i = 1; i < points.length; i++) {
-        if (points[i].y == smallestY.y) {
-            if (points[i].x < smallestY.x) {
-                smallestY = points[i];
+    for (let i = 1; i < restOfPoints.length; i++) {
+        if (restOfPoints[i].y == smallestY.y) {
+            if (restOfPoints[i].x < smallestY.x) {
+                smallestY = restOfPoints[i];
                 indexSmallestY = i;
             }
         }
-        else if (points[i].y < smallestY.y) {
-            smallestY = points[i];
+        else if (restOfPoints[i].y < smallestY.y) {
+            smallestY = restOfPoints[i];
             indexSmallestY = i;
         }
     }
@@ -237,9 +300,26 @@ function GrahamScan() {
         }
     }
 
+    // Find the most distant point to each element in the convex Hull
+    for (let i = 0; i < convexHull.length; i++) {
+        convexHull[i].mostDistantPoint = '';
+        convexHull[i].pathToMostDistant = [];
+        let biggestDistance = 0;
+
+        for (let j = 0; j < convexHull.length; j++) {
+            let dist = Dist(convexHull[i], convexHull[j]);
+            if (dist.dist > biggestDistance) {
+                convexHull[i].mostDistantPoint = convexHull[j].id;
+                biggestDistance = dist.dist;
+            }
+        }
+    }
+
     return convexHull;
 }
 
+
+/* AUX FUNCTIONS */
 function SortArrayByXandY(arr) {
     arr.sort(function(a, b) {
         return (a.x - b.x === 0) ? a.y - b.y : a.x - b.x;
@@ -263,6 +343,14 @@ function Dist(p1, p2) {
 
     return distObj;
 }
+function GetCoordinatesById(id) {
+    let x = $(`#${id}`).attr('cx');
+    let y = $(`#${id}`).attr('cy');
+    return coords = {
+        x: x,
+        y: y
+    }
+}
 function GetGrahamAngle(x, y) {
     if (y === 0) {
         return 0;
@@ -278,6 +366,7 @@ function CrossProduct(p1, p2, p3) {
     return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 
+/* RESET */
 function DeleteAllPoints() {
     points = [];
     REFS.map.empty();
