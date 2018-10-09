@@ -27,14 +27,12 @@
             </h1>
         </header>
         <section id="map-container">
-            <svg id="map" width="100%" height="100%" class="map">
-
-            </svg>
+            <svg id="map" width="100%" height="100%" class="map"></svg>
         </section>
         <aside>
             <ul class="btn-container row no-gutters justify-content-center">
                 <li class="action-btn col-4">
-                    <button onclick="presetPoints(event);"><i class="far fa-file-alt"></i></button>
+                    <button onclick="PresetPoints(event);"><i class="far fa-file-alt"></i></button>
                     <label>PRESET POINTS</label>
                 </li>
                 <li class="action-btn col-4">
@@ -42,22 +40,22 @@
                     <label>ADD RANDOM POINT</label>
                 </li>
                 <li class="action-btn col-4">
-                    <button><i class="fas fa-plus"></i></button>
+                    <button on><i class="fas fa-plus"></i></button>
                     <label>INPUT POINTS MODE</label>
                 </li>
                 <li class="action-btn col-4">
-                    <button><i class="fas fa-times"></i></button>
+                    <button onclick="DeleteAllPoints();"><i class="fas fa-times"></i></button>
                     <label>DELETE ALL POINTS</label>
                 </li>
                 <li class="action-btn col-4">
-                    <button onclick="findClosestPair();"><i class="fas fa-play"></i></button>
+                    <button onclick="FindClosestPair();"><i class="fas fa-play"></i></button>
                     <label>FIND CLOSEST PAIR</label>
                 </li>
             </ul>
             <div class="change-mode">
-                <button class="change-btn">closest_pair</button>
-                <button class="change-btn">graham_scan</button>
-                <button class="change-btn">find_the_way</button>
+                <button class="change-btn">CLOSEST PAIR</button>
+                <button onclick="GrahamScan();" class="change-btn">GRAHAM SCAN</button>
+                <button class="change-btn">FIND THE WAY</button>
             </div>
         </aside>
 
