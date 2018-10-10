@@ -91,7 +91,7 @@ function DrawCircle(posX, posY) {
         console.log($(newPoint).attr('cy'));
     });
 
-    $('#map').append(newPoint);;
+    $('#map').append(newPoint);
 }
 function DrawConvexHull(points) {
     if (!points) { return; }
@@ -100,7 +100,6 @@ function DrawConvexHull(points) {
         convexHull.setAttributeNS(null, 'points', '');
 
     let setOfPs = convexHull.getAttribute('points');
-    console.log(setOfPs);
     for (let i = 0; i <= points.length; i++) {
         if (i === points.length) {
             setOfPs += `${points[0].x}, ${points[0].y} `;
@@ -108,7 +107,6 @@ function DrawConvexHull(points) {
             setOfPs += `${points[i].x}, ${points[i].y} `;
         }
     }
-    console.log(setOfPs);
     convexHull.setAttribute('points', setOfPs);
 
     $(convexHull).addClass('hull');
@@ -116,6 +114,19 @@ function DrawConvexHull(points) {
 
     $('#map').append(convexHull);
 }
+function DrawLine(p1, p2, class_name) {
+    let line = document.createElementNS(SVG_URL, 'line');
+        line.setAttributeNS(null, 'x1', p1.x);
+        line.setAttributeNS(null, 'x2', p2.x);
+        line.setAttributeNS(null, 'y1', p1.y);
+        line.setAttributeNS(null, 'y2', p2.y);
+
+    $(line).addClass(class_name);
+    $(line).attr('id', `line-${p1.id}-${p2.id}`);
+
+    $('#map').append(line);
+}
+
 
 /* CLOSEST PAIR OF POINTS */
 function FindClosestPair() {
@@ -223,6 +234,7 @@ function AStar() {
         }
     }
 
+
     // Create the graph
     // From a copy of points, add the .siblings attribute to each element
     // Find the siblings of all the points
@@ -232,7 +244,11 @@ function AStar() {
             id: point.id,
             x: point.x,
             y: point.y,
-            siblings: []
+            siblings: [],
+            // f = total cost; g = cost to get to this node from the start; h = heuristics
+            f: 0,
+            g: 0,
+            h: 0
         }
         graph.push(copyOfPoint);
     });
@@ -242,16 +258,21 @@ function AStar() {
             if (dist < biggerShortestDist) {
                 graph[i].siblings.push(points[j].id);
                 graph[j].siblings.push(points[i].id);
+
+                DrawLine(points[i], points[j], 'graph-line');
             }
         }
     }
 
+
     let convexHullByGraham = GrahamScan(graph);
+
+
+    //CalculatePaths(graph, convexHullByGraham[0], convexHullByGraham[0].mostDistantPoint);
     console.log(graph);
     console.log(convexHullByGraham);
 }
 function GrahamScan(points) {
-    // http://www.algomation.com/algorithm/graham-scan-convex-hull
     if (points.length === 0) { return; }
     let convexHull = [];
 
@@ -268,7 +289,10 @@ function GrahamScan(points) {
             id: point.id,
             x: point.x,
             y: point.y,
-            siblings: point.siblings
+            siblings: point.siblings,
+            g: point.g,
+            f: point.f,
+            h: point.h
         }
         restOfPoints.push(copyOfPoint);
     });
@@ -340,10 +364,69 @@ function GrahamScan(points) {
                 biggestDistance = dist.dist;
             }
         }
+
+        DrawLine(convexHull[i], GetPointById(convexHull[i].mostDistantPoint, convexHull), 'most-distant');
     }
 
     DrawConvexHull(convexHull);
     return convexHull;
+}
+// function CalculatePaths(graph, start, end) {
+
+//     // Clean and push the first point into the array
+//     let openList = [];
+//     let closedList = [];
+//     openList.push(start); // array of points
+
+//     while(openList.length > 0) {
+//         let minIndex = 0;
+//         for (let i = 0; i < openList.length; i++) {
+//             if (openList[i].f < openList[minIndex].f) {
+//                 minIndex = i;
+//             }
+//         }
+//         let current = openList[minIndex]; // point
+
+//         // Remove item from open and passes it to closed
+//         openList.splice(minIndex, 1);
+//         closedList.push(current);
+
+//         // Analyze each sibling of the current node
+//         let siblings = current.siblings;
+//         for (let i = 0; i < siblings.length; i++) {
+//             let sibling = GetPointById(siblings[i], graph); // point
+
+//             // G is the shortest distance from start to current
+//             let g = current.g + Dist(current, sibling).dist;
+//             let bestG = false;
+//             let found = FindNode(sibling, openList);
+
+//             if (!found) {
+//                 bestG = true;
+//                 sibling.h = Dist(sibling, GetPointById(end, graph)).dist;
+//                 openList.push(sibling);
+//                 console.log(sibling);
+//                 console.log(openList);
+//             } else if (g < sibling.g) {
+//                 bestG = true;
+//             }
+
+//             if (bestG) {
+//                 closedList.push(sibling);
+//                 sibling.g = g;
+//                 sibling.f = sibling.g + sibling.h;
+//             }
+//         }
+//     }
+
+// }
+function FindNode(id, arr) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].id == id) {
+            return true;
+        }
+    }
+    return false;
 }
 
 
@@ -378,6 +461,14 @@ function GetCoordinatesById(id) {
         x: x,
         y: y
     }
+}
+function GetPointById(id, arr) {
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].id == id) {
+            return arr[i];
+        }
+    }
+    return null;
 }
 function GetGrahamAngle(x, y) {
     if (y === 0) {
@@ -446,7 +537,7 @@ function ChangeMode(num) {
             <span>y</span>`);
         REFS.btn_special.append(
             `<button onclick="AStar();"><i class="fas fa-play"></i></button>
-            <label>FIND QUICK HULL</label>`);
+            <label>FIND THE WAY</label>`);
     }
 
     MODE = num;
